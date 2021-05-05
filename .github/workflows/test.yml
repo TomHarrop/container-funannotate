@@ -78,9 +78,9 @@ jobs:
           password: ${{ secrets.CR_PAT }}
       - uses: eWaterCycle/setup-singularity@v6
         with:
-          singularity-version: 3.7.1
+          singularity-version: 3.7.3
       - name: Pull the singularity containers
         run: |
           singularity remote login --username ${{ github.repository_owner }} --password ${{ secrets.CR_PAT }} docker://ghcr.io
           singularity pull docker://ghcr.io/tomharrop/sbuild-test:latest
-   
+          ls -lhrt   
