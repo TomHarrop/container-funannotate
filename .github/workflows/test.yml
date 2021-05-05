@@ -1,12 +1,12 @@
-name: singularity-deploy-test
+name: docker-build-test
 
 # run on creation of a release tag
 on:
   pull_request: []
 
 jobs:
-  docker:
-    name: Build Docker container, push to ghcr, and convert to .sif
+  test:
+    name: Build Docker container but don't push it
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -46,17 +46,17 @@ jobs:
         uses: docker/build-push-action@v2
         with:
           context: .
-          push: true
+          push: false
           file: ${{ env.recipe }}
           tags: |
             ghcr.io/${{ env.owner }}/${{ env.reponame }}:${{ env.image_tag }}
-      - uses: eWaterCycle/setup-singularity@v6
-        with:
-          singularity-version: 3.7.1
-      - name: Pull the singularity containers
-        run: |
-          singularity remote login --username ${{ github.repository_owner }} --password ${{ secrets.CR_PAT }} docker://ghcr.io
-          singularity build --fakeroot \
-            ${{ env.reponame }}:${{ env.image_tag }}.sif \
-            docker://ghcr.io/${{ env.owner }}/${{ env.reponame }}:${{ env.image_tag }}
-          singularity exec ${{ env.reponame }}:${{ env.image_tag }}.sif cat /etc/os-release
+      # - uses: eWaterCycle/setup-singularity@v6
+      #   with:
+      #     singularity-version: 3.7.1
+      # - name: Pull the singularity containers
+      #   run: |
+      #     singularity remote login --username ${{ github.repository_owner }} --password ${{ secrets.CR_PAT }} docker://ghcr.io
+      #     singularity build --fakeroot \
+      #       ${{ env.reponame }}:${{ env.image_tag }}.sif \
+      #       docker://ghcr.io/${{ env.owner }}/${{ env.reponame }}:${{ env.image_tag }}
+      #     singularity exec ${{ env.reponame }}:${{ env.image_tag }}.sif cat /etc/os-release

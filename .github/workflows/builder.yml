@@ -1,10 +1,7 @@
-name: singularity-deploy
+name: docker-sif-deploy
 
 on:
   push:
-    # This branch does not exist! You should update this to be your "production" branch
-    # and ensure that when you work on recipes you only merge to this branch when it's time to release
-    # You can also use another GitHub trigger entirely
     branches:
       - "main"
 
@@ -15,13 +12,14 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v3.x
       - name: Get Latest Tag
         run: |
             # Get the latest tag, we won't build if it's the current
             git fetch --tags
             latest_tag=$(git tag | tail -1)
             echo "latest_tag=$latest_tag" >> $GITHUB_ENV
-
       - name: Define Repository Name and Release Version
         run: |
             repo=$(echo "${GITHUB_REPOSITORY/\//-}")
@@ -39,34 +37,52 @@ jobs:
           release_name: Release ${{ env.release_tag }}
           draft: false
           prerelease: false
+      - name: Get Dockerfile image tag
+        run: |
+          owner=${{ env.GITHUB_REPOSITORY_OWNER_PART_SLUG }}
+          repo=${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}
+          echo "owner is $owner"
+          echo "repo is $repo."
+          recipe=$(ls Dockerfile*)
+          echo "Building $recipe"
+          tag=$(echo "${recipe/Dockerfile\./}")
+          # If we find empty, use latest
+          if [ "$tag" == "Dockerfile" ]; then
+              tag=latest
+          fi
+          # Build the container and name by tag
+          echo "Tag is $tag."
+          echo "recipe=$recipe" >> $GITHUB_ENV
+          echo "owner=$owner" >> $GITHUB_ENV
+          echo "reponame=$repo" >> $GITHUB_ENV
+          echo "image_tag=$tag" >> $GITHUB_ENV
+      - name: Set up QEMU
+        uses: docker/setup-qemu-action@v1
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1 
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.CR_PAT }}
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          context: .
+          push: true
+          file: ${{ env.recipe }}
+          tags: |
+            ghcr.io/${{ env.owner }}/${{ env.reponame }}:${{ env.image_tag }}
       - uses: eWaterCycle/setup-singularity@v6
-        if: ${{ env.release_tag != env.latest_tag }}
         with:
           singularity-version: 3.7.1
-      - name: Build the singularity container
-        if: ${{ env.release_tag != env.latest_tag }}
+      - name: Pull the singularity containers
         run: |
-            repo=$(echo "${GITHUB_REPOSITORY/\//-}")
-
-            # For each Singularity* container, build based on the prefix (tag) 
-            for recipe in $(ls Singularity*); do
-                echo "Building $recipe"
-                tag=$(echo "${recipe/Singularity\./}")
-                # If we find empty, use latest
-                if [ "$tag" == "Singularity" ]; then
-                    tag=latest
-                fi
-                # Build the container and name by tag
-                echo "Tag is $tag."
-                container="$repo:$tag.sif"
-                singularity build --fakeroot container.sif "$recipe"
-                if [ "$?" == "0" ]; then
-                    echo "Successfully built container $container."                
-                    mv container.sif "$container"
-                else
-                    echo "There was an issue building $container."          
-                fi
-            done
+          singularity remote login --username ${{ github.repository_owner }} --password ${{ secrets.CR_PAT }} docker://ghcr.io
+          singularity build --fakeroot \
+            ${{ env.reponame }}:${{ env.image_tag }}.sif \
+            docker://ghcr.io/${{ env.owner }}/${{ env.reponame }}:${{ env.image_tag }}
       - name: Upload Release Assets
         if: ${{ env.release_tag != env.latest_tag }}
         env:
