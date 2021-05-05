@@ -48,7 +48,7 @@ jobs:
         uses: actions/checkout@v2
       - name: Get Dockerfile image tag
         run: |
-          repo={{ github.event.repository.name }}
+          repo=${{ github.event.repository.name }}
           echo "repo is $repo."
           recipe=$(ls Dockerfile*)
           echo "Building $recipe"
