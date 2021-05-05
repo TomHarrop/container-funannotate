@@ -83,12 +83,6 @@ jobs:
           push: true
           tags: |
             ghcr.io/${{ env.owner }}/${{ env.reponame }}:${{ env.image_tag }}
-
-  pull:
-      name: Singularity pull
-      runs-on: ubuntu-latest
-      needs: docker
-      steps:
       - uses: eWaterCycle/setup-singularity@v6
         with:
           singularity-version: 3.7.1
