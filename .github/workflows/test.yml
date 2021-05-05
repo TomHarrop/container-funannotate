@@ -41,14 +41,19 @@ jobs:
         run: |
           echo "Run any additional tests here."
   docker:
-    name: Test Container Builds
+    name: Docker Build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
-      - uses: docker/build-push-action@v2
-      - name: Build the Docker containers
-        run: |
-            repo=$(echo "${GITHUB_REPOSITORY/\//-}")
-            docker build . --file Dockerfile
-            ls -lhrt .
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1 
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push
+        uses: docker/build-push-action@v2
+        with:
+          tags: |
+            tomharrop/sbuild-test:latest
