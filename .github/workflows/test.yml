@@ -74,5 +74,5 @@ jobs:
       - name: Pull the singularity containers
         run: |
           singularity remote login --username ${{ github.repository_owner }} --password ${{ secrets.GITHUB_TOKEN }} docker://ghcr.io
-          singularity pull docker://docker.io/tomharrop/sbuild-test:latest
+          singularity pull docker://ghcr.io/tomharrop/sbuild-test:latest
    
