@@ -40,3 +40,15 @@ jobs:
       - name: Run Additional Tests
         run: |
           echo "Run any additional tests here."
+  docker:
+    name: Test Container Builds
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - uses: docker/build-push-action@v2
+      - name: Build the Docker containers
+        run: |
+            repo=$(echo "${GITHUB_REPOSITORY/\//-}")
+            docker build . --file Dockerfile
+            ls -lhrt .
