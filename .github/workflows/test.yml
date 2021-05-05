@@ -89,17 +89,13 @@ jobs:
       runs-on: ubuntu-latest
       needs: docker
       steps:
-      # - name: Login to GitHub Container Registry
-      #   uses: docker/login-action@v1 
-      #   with:
-      #     registry: ghcr.io
-      #     username: ${{ github.repository_owner }}
-      #     password: ${{ secrets.CR_PAT }}
       - uses: eWaterCycle/setup-singularity@v6
         with:
           singularity-version: 3.7.1
       - name: Pull the singularity containers
         run: |
           singularity remote login --username ${{ github.repository_owner }} --password ${{ secrets.CR_PAT }} docker://ghcr.io
-          singularity pull docker://ghcr.io/tomharrop/sbuild-test:latest
-          singularity exec sbuild-test_latest.sif cat /etc/os-release
+          singularity build --fakeroot \
+            my_image.sif \
+            docker://ghcr.io/${{ env.owner }}/${{ env.reponame }}:${{ env.image_tag }}
+          singularity exec my_image.sif cat /etc/os-release
