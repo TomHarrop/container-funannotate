@@ -46,9 +46,13 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
+      - name: Inject slug/short variables
+        uses: rlespinasse/github-slug-action@v3.x
       - name: Get Dockerfile image tag
         run: |
-          repo=${{ github.event.repository.name }}
+          owner=${{ env.GITHUB_REPOSITORY_OWNER_PART_SLUG }}
+          repo=${{ env.GITHUB_REPOSITORY_NAME_PART_SLUG }}
+          echo "owner is $owner"
           echo "repo is $repo."
           recipe=$(ls Dockerfile*)
           echo "Building $recipe"
@@ -59,6 +63,7 @@ jobs:
           fi
           # Build the container and name by tag
           echo "Tag is $tag."
+          echo "owner=$owner" >> $GITHUB_ENV
           echo "reponame=$repo" >> $GITHUB_ENV
           echo "image_tag=$tag" >> $GITHUB_ENV
       - name: Set up QEMU
@@ -77,7 +82,7 @@ jobs:
           context: .
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/${{ env.reponame }}:${{ env.image_tag }}
+            ghcr.io/${{ env.owner }}/${{ env.reponame }}:${{ env.image_tag }}
 
   pull:
       name: Singularity pull
