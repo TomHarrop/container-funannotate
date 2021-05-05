@@ -57,3 +57,21 @@ jobs:
         with:
           tags: |
             tomharrop/sbuild-test:latest
+  pull:
+      name: Singularity pull
+      runs-on: ubuntu-latest
+      needs: docker
+      steps:
+      - name: Login to GitHub Container Registry
+        uses: docker/login-action@v1 
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - uses: eWaterCycle/setup-singularity@v6
+        with:
+          singularity-version: 3.7.1
+      - name: Pull the singularity containers
+        run: |
+          singularity pull docker://docker.io/tomharrop/sbuild-test:latest
+   
