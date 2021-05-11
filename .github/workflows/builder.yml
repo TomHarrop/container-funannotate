@@ -75,9 +75,11 @@ jobs:
           tags: |
             ghcr.io/${{ env.owner }}/${{ env.reponame }}:${{ env.image_tag }}
       - uses: eWaterCycle/setup-singularity@v6
+        if: ${{ env.release_tag != env.latest_tag }}
         with:
           singularity-version: 3.7.1
       - name: Pull the singularity containers
+        if: ${{ env.release_tag != env.latest_tag }}
         run: |
           singularity remote login --username ${{ github.repository_owner }} --password ${{ secrets.CR_PAT }} docker://ghcr.io
           singularity build --fakeroot \
