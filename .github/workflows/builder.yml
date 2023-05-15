@@ -55,7 +55,7 @@ jobs:
           tag=$(echo "${recipe/Dockerfile\./}")
           # If we find empty, use latest
           if [ "$tag" == "Dockerfile" ]; then
-              tag=latest
+              tag=${{ env.release_tag }}
           fi
           # Build the container and name by tag
           echo "Tag is $tag."
