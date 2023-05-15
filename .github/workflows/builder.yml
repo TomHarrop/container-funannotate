@@ -35,15 +35,10 @@ jobs:
             echo "release_tag=$release" >> $GITHUB_ENV
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
         if: ${{ env.release_tag != env.latest_tag }}
+        run: gh release create ${{ env.release_tag }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ env.release_tag }}
-          release_name: Release ${{ env.release_tag }}
-          draft: false
-          prerelease: false
       - name: Get Dockerfile image tag
         run: |
           owner=${{ env.GITHUB_REPOSITORY_OWNER_PART_SLUG }}
