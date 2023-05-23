@@ -49,7 +49,7 @@ jobs:
           recipe=$(ls Dockerfile*)
           echo "Building $recipe"
           tag=$(echo "${recipe/Dockerfile\./}")
-          # If we find empty, use latest
+          # If we find empty, use the release tag
           if [ "$tag" == "Dockerfile" ]; then
               tag=${{ env.release_tag }}
           fi
@@ -90,23 +90,3 @@ jobs:
         run: |
           rm -rf /tmp/.buildx-cache
           mv /tmp/.buildx-cache-new /tmp/.buildx-cache
-      - uses: eWaterCycle/setup-singularity@v6
-        if: ${{ env.release_tag != env.latest_tag }}
-        with:
-          singularity-version: 3.7.1
-      - name: Pull the singularity containers
-        if: ${{ env.release_tag != env.latest_tag }}
-        run: |
-          singularity remote login --username ${{ github.repository_owner }} --password ${{ secrets.CR_PAT }} docker://ghcr.io
-          singularity build --fakeroot \
-            ${{ env.reponame }}:${{ env.image_tag }}.sif \
-            docker://ghcr.io/${{ env.owner }}/${{ env.reponame }}:${{ env.image_tag }}
-      - name: Upload Release Assets
-        if: ${{ env.release_tag != env.latest_tag }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          upload_url: ${{ steps.create_release.outputs.upload_url }} 
-          tag_name: ${{ env.release_tag }}
-        run: |
-          hub release edit $(find . -type f -name "*.sif" -printf "-a %p ") -m "" "$tag_name" 
-          
