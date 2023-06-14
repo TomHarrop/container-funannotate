@@ -2,12 +2,7 @@ FROM ubuntu:20.04
 
 LABEL SOFTWARE_NAME ubuntu 20.04
 LABEL MAINTAINER "Tom Harrop"
-
-# use the VERSION file to set the version label
-COPY VERSION /app/VERSION
-RUN export VERSION=$(cat /app/VERSION) && \
-    echo "VERSION=$VERSION" >> /etc/environment
-LABEL version=$VERSION
+LABEL version=5bf6256
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV LC_ALL=C
@@ -26,5 +21,11 @@ RUN     . /etc/os-release \
 
 RUN     apt-get update && apt-get install -y  --no-install-recommends \
             build-essential
+
+# the version file can be used to checkout the tag like this:
+# RUN     export VERSION=$(cat /app/VERSION) && \
+#         export TAG="$(expr "$VERSION" : '\([^_]*\)')" && \
+#         git checkout -f $TAG &&\
+#         git submodule update --init --recursive
 
 ENTRYPOINT ["/usr/bin/cat /etc/os-release"]
