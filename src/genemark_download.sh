@@ -3,8 +3,8 @@
 wget \
         --post-data='program=gmet&os=linux64&name=https://bit.ly/2GAQMGz&institution=na&country=na&email=na@na.com&submit=I+agree+to+the+terms+of+this+license+agreement' \
         http://exon.gatech.edu/GeneMark/license_download.cgi
-    bin_url="$(grep -Po 'http://.*?linux_64.tar.gz' license_download.cgi)"
-    url32="$(grep -Po "http://.*?gm_key_32.gz" license_download.cgi)"
+    bin_url="$(grep -o 'http://[^ ]*linux_64\.tar\.gz' license_download.cgi)"
+    url32="$(grep -o 'http://[^ ]*gm_key_32\.gz' license_download.cgi)"
     url64="${url32/gm_key_32/gm_key_64}"
     wget -O "genemark.tar.gz" "${bin_url}"
     mkdir genemark
@@ -13,7 +13,6 @@ wget \
         --strip-components 1
     rm -f genemark.tar.gz
     cd genemark || exit 1
-    rm gm_key*
     wget "${url32}"
     wget "${url64}"
     gunzip *.gz
