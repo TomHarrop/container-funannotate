@@ -6,7 +6,7 @@ Singularity containers for `funannotate`.
 
 ### Usage
 
-**Recommended: use the `funannotate-conda` image**.
+**Recommended: use the Docker image from GHCR**.
 
 To get the conda environment to activate you have to preface all your commands with `bash -c`. For example:
 
