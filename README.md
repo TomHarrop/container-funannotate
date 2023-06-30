@@ -1,15 +1,17 @@
-## funannotate-singularity
+## container-funannotate
 
 [![https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg](https://www.singularity-hub.org/static/img/hosted-singularity--hub-%23e32929.svg)](https://singularity-hub.org/collections/3314)
 
-Singularity containers for `funannotate`.
+Docker image for `funannotate`.
 
 ### Usage
 
 **Recommended: use the Docker image from GHCR**.
 
 ```bash
-apptainer exec docker://ghcr.io/tomharrop/funannotate-singularity:1.8.15 funannotate check --show-versions
+apptainer exec \
+    docker://ghcr.io/tomharrop/funannotate-singularity:1.8.15 \
+    funannotate check --show-versions
 ```
 
 By default, funannotate uses the `FUNANNOTATE_DB` environment variable to define the path to the funannotate database. As of [7a3dbf9](https://github.com/TomHarrop/funannotate-singularity/commit/7a3dbf905639fd854f15bf1604630bb6e87068fd), `FUNANNOTATE_DB` is not set in the container. Provide the path to the database either by defining the variable or using the `-d` argument to funannotate.
