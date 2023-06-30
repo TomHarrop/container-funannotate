@@ -8,13 +8,9 @@ Singularity containers for `funannotate`.
 
 **Recommended: use the Docker image from GHCR**.
 
-To get the conda environment to activate you have to preface all your commands with `bash -c`. For example:
-
 ```bash
-singularity exec funannotate-conda_1.7.4.sif bash -c 'funannotate check --show-versions'
+apptainer exec docker://ghcr.io/tomharrop/funannotate-singularity:1.8.15 funannotate check --show-versions
 ```
-
-AFAIK this is the only way to use conda in a singularity container, but please open an issue to let me know if there is a better way.
 
 By default, funannotate uses the `FUNANNOTATE_DB` environment variable to define the path to the funannotate database. As of [7a3dbf9](https://github.com/TomHarrop/funannotate-singularity/commit/7a3dbf905639fd854f15bf1604630bb6e87068fd), `FUNANNOTATE_DB` is not set in the container. Provide the path to the database either by defining the variable or using the `-d` argument to funannotate.
 
@@ -25,6 +21,8 @@ The following dependencies have issues in funannotate-conda_1.7.4:
 - `ete3` isn't installed (see [here](https://github.com/nextgenusfs/funannotate/issues/387#issuecomment-593024593)).
 - RepeatMasker isn't installed. Use the [Dfam-consortium/TETools](https://github.com/Dfam-consortium/TETools) Docker image or my Singularity version (below) to run RepeatMasker separately.
 - `signalp` **can't be installed** because of licensing issues.
+- `pslCDnaFilter` isn't installed. It only seems to run if `blat` is used in `funannotate predict` (see [this code](https://github.com/nextgenusfs/funannotate/blob/eac3691b43e177ad452057a3128202491d59ca49/funannotate/predict.py#L460-L461))
+- `emapper.py` isn't working because the conda container is missing `gcc`. It will probably be easier to run emapper.py separately and provide the results to `funannotate annotate`.
 
 ### Other containers
 
