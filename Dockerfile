@@ -24,7 +24,7 @@ WORKDIR /usr/local/opt
 
 RUN     wget -O genemark_download.sh \
             --no-check-certificate \
-            https://raw.githubusercontent.com/TomHarrop/funannotate-singularity/update-gm-dl/src/genemark_download.sh && \
+            https://raw.githubusercontent.com/TomHarrop/funannotate-singularity/master/src/genemark_download.sh && \
         bash genemark_download.sh && \
         rm genemark_download.sh && \
         find genemark -name "*.pl" -type f \
