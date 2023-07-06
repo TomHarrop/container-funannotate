@@ -9,7 +9,7 @@ ENV GENEMARK_PATH=/usr/local/opt/genemark
 ENV PATH="${PATH}:/usr/local/opt/genemark"
 
 # download genemark and fix shebangs
-COPY    genemark_download.sh /usr/local/opt/genemark_download.sh
+COPY    src/genemark_download.sh /usr/local/opt/genemark_download.sh
 WORKDIR /usr/local/opt
 
 RUN     bash genemark_download.sh && \
