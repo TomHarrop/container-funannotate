@@ -1,5 +1,7 @@
 #!/usr/bin/env bash
 
+set -eux
+
 wget \
         --post-data='program=gmet&os=linux64&name=https://bit.ly/2GAQMGz&institution=na&country=na&email=na@na.com&submit=I+agree+to+the+terms+of+this+license+agreement' \
         http://exon.gatech.edu/GeneMark/license_download.cgi
