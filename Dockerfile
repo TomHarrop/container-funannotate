@@ -9,12 +9,10 @@ ENV GENEMARK_PATH=/usr/local/opt/genemark
 ENV PATH="${PATH}:/usr/local/opt/genemark"
 
 # download genemark and fix shebangs
+COPY    src/genemark_download.sh /usr/local/opt/genemark_download.sh
 WORKDIR /usr/local/opt
 
-RUN     wget -O genemark_download.sh \
-            --no-check-certificate \
-            https://raw.githubusercontent.com/TomHarrop/container-funannotate/master/src/genemark_download.sh && \
-        bash genemark_download.sh && \
+RUN     bash genemark_download.sh && \
         rm genemark_download.sh && \
         find genemark -name "*.pl" -type f \
             -exec perl -i -0pe 's/^#\!.*perl.*/#\!\/usr\/bin\/env perl/g' {} +
