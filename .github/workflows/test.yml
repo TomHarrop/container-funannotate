@@ -3,7 +3,7 @@ name: docker-build-test
 
 # run on creation of a release tag
 on:
-  pull_request: []
+  pull_request:
 
 jobs:
   test:
@@ -16,10 +16,10 @@ jobs:
         uses: rlespinasse/github-slug-action@v3.x
       - name: Define Repository Name and Release Version
         run: |
-            repo=$(echo "${GITHUB_REPOSITORY/\//-}")
-            release=$(cat VERSION)
-            echo "reponame=$repo" >> $GITHUB_ENV
-            echo "release_tag=$release" >> $GITHUB_ENV
+          repo=$(echo "${GITHUB_REPOSITORY/\//-}")
+          release=$(cat VERSION)
+          echo "reponame=$repo" >> $GITHUB_ENV
+          echo "release_tag=$release" >> $GITHUB_ENV
       - name: Get Dockerfile image tag
         run: |
           owner=${{ env.GITHUB_REPOSITORY_OWNER_PART_SLUG }}
