@@ -11,8 +11,8 @@ ENV PATH="${PATH}:/usr/local/opt/genemark"
 ENV AUGUSTUS_CONFIG_PATH=/usr/local/config
 ENV EVM_HOME=/usr/local/opt/evidencemodeler-1.1.1
 ENV GENEMARK_PATH=/usr/local/opt/genemark
-ENV PASAHOME=/usr/local/opt/pasa-2.5.2
-ENV TRINITYHOME=/usr/local/opt/trinity-2.8.5
+ENV PASAHOME=/usr/local/opt/pasa-2.5.3
+ENV TRINITYHOME=/usr/local/bin
 
 # download genemark then fix shebangs
 COPY    src/genemark_download.sh /usr/local/opt/genemark_download.sh
