@@ -1,7 +1,7 @@
-FROM quay.io/biocontainers/funannotate:1.8.15--pyhdfd78af_2
+FROM quay.io/biocontainers/funannotate:1.8.17--pyhdfd78af_2
 
 LABEL MAINTAINER "Tom Harrop"
-LABEL version=1.8.15
+LABEL version=1.8.17
 
 ENV LC_ALL=C
 ENV DEBIAN_FRONTEND=noninteractive
