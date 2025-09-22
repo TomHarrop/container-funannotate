@@ -3,7 +3,7 @@ name: docker-build-test
 
 # run on creation of a release tag
 on:
-  pull_request: []
+  pull_request:
 
 jobs:
   test:
@@ -16,10 +16,10 @@ jobs:
         uses: rlespinasse/github-slug-action@v3.x
       - name: Define Repository Name and Release Version
         run: |
-            repo=$(echo "${GITHUB_REPOSITORY/\//-}")
-            release=$(cat VERSION)
-            echo "reponame=$repo" >> $GITHUB_ENV
-            echo "release_tag=$release" >> $GITHUB_ENV
+          repo=$(echo "${GITHUB_REPOSITORY/\//-}")
+          release=$(cat VERSION)
+          echo "reponame=$repo" >> $GITHUB_ENV
+          echo "release_tag=$release" >> $GITHUB_ENV
       - name: Get Dockerfile image tag
         run: |
           owner=${{ env.GITHUB_REPOSITORY_OWNER_PART_SLUG }}
@@ -44,7 +44,7 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2.5.0
       - name: Cache Docker layers
-        uses: actions/cache@v2
+        uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-buildx-${{ github.sha }}
