@@ -1,4 +1,4 @@
-FROM quay.io/biocontainers/funannotate:1.8.17--pyhdfd78af_2
+FROM quay.io/biocontainers/funannotate:1.8.17--pyhdfd78af_3
 
 LABEL MAINTAINER "Tom Harrop"
 LABEL version=1.8.17
