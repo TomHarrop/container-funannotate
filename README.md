@@ -8,7 +8,7 @@ You can download the container from GHCR and use it with Docker or Singularity (
 
 ```bash
 apptainer exec \
-    docker://ghcr.io/tomharrop/container-funannotate:1.8.15_cv1 \
+    docker://ghcr.io/tomharrop/container-funannotate:1.8.17_cv3 \
     funannotate check --show-versions
 ```
 
