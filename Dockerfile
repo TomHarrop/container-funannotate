@@ -27,4 +27,7 @@ WORKDIR /usr/local
 RUN     scriptdir=$( find . -name "aux_scripts" -type d | head -n1 ) && \
         find $scriptdir -name "*.py" -exec chmod +x {} +
 
+# in the 1.8.17 container, PASA can't find the transdecoder scripts
+ENV PATH="${PATH}:/usr/local/opt/transdecoder/util"
+
 ENTRYPOINT ["/usr/local/bin/funannotate"]
