@@ -22,4 +22,9 @@ RUN     bash genemark_download.sh && \
         find genemark -name "*.pl" -type f \
         -exec perl -i -0pe 's/^#\!.*perl.*/#\!\/usr\/bin\/env perl/g' {} +
 
+# mark funannotate scripts executable (hack, needs to be fixed upstream)
+WORKDIR /usr/local
+RUN     scriptdir=$( find . -name "aux_scripts" -type d | head -n1 ) && \
+        find $scriptdir -name "*.py" -exec chmod +x {} +
+
 ENTRYPOINT ["/usr/local/bin/funannotate"]
